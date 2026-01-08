@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend_app
+    environment:
+      MONGO_URL: mongodb://mongo:27017/dockerdb
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:6
+    container_name: mongo_db
+    volumes:
+      - mongo_data:/data/db
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
+
